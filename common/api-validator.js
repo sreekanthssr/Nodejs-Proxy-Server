@@ -1,16 +1,16 @@
-const fs = import('fs');
-const path = import('path');  
-const log = import('./log'); 
-export default function valiateAPIConfig(){
-const apiConfigFileName = path.join(__dirname,process.env.API_CONFIG_FILE);
-const apiConfig = fs.readFileSync(apiConfigFileName, 'utf8');
+import logMessage from './log.js';
+export default function valiateAPIConfig(apiConfig){
+    if(!basicValidator(apiConfig)){
+        return false;
+    }
+    return true;
 }
 
 function basicValidator(apiConfig){
+    let message = "";
+    let flag = true;
     try{
         const apiConfigJSON = JSON.parse(apiConfig);
-        let message = "";
-        let flag = true;
         if(apiConfigJSON){
             if(!apiConfigJSON.hasOwnProperty("version")){
                 message = "Version is missing \n";
@@ -24,13 +24,14 @@ function basicValidator(apiConfig){
                 message = "APIs is missing \n";
                 flag = false;
             } else if(!apiConfigJSON.apis.length) {
-                message = "No API documents found \n";
+                message = "No API definition found \n";
                 flag = false;
             }        
         }
     } catch (e){
-        log.logMessage(`Basic validation failed ${e}`);
+        logMessage(`Basic validation failed ${e}`);
         return false;
     }
-    return true;
+    logMessage(message);
+    return flag;
 }
