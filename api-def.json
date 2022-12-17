@@ -1,0 +1,46 @@
+{
+    "version": "1.0.0",
+    "baseURL": "http://localhost:3001/",
+    "preScriptPath":"",
+    "postScriptPath":"",
+    "commonPreScript":"",
+    "commonPostScript":"",
+    "createTokenConfig": {
+        "url":"",
+        "header":{},
+        "methode":"",
+        "data":"",
+        "tokenName":"",
+        "tokenSuffix":""
+    },
+    "apis": [{
+            "type": "GET",
+            "path": "getuser",
+            "serverURL": "getCustomer",
+            "preScript":"",
+            "postScript":"",
+            "preScriptFile":"",
+            "postScriptFile":""
+            
+        },
+        {
+            "type": "POST",
+            "path": "postuser",
+            "serverURL": "createCustomer",
+            "accessType": "E",
+            "tokenMapping": {"token": "bearerToken"},
+            "tokenSuffix":""
+        },
+        {
+            "type": "PUT",
+            "path": "putuser",
+            "serverURL": "updateCustomer",
+            "mapping": [{
+                "name": "username",
+                "email": "emailId"
+            }],
+            "accessType": "C",
+            "tokenMapping": {"token": "bearerToken"}
+        }
+    ]
+}

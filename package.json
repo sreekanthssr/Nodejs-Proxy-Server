@@ -1,0 +1,15 @@
+{
+  "name": "nodejs-dynamic-api",
+  "version": "1.0.0",
+  "description": "Create API from open api configuration",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start" : "nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
