@@ -16,30 +16,30 @@
     "apis": [{
             "type": "GET",
             "path": "getuser",
-            "serverURL": "getCustomer",
+            "microserviceURL": "getCustomer",
+            "appendBasePath": true,
             "preScript":"",
             "postScript":"",
             "preScriptFile":"",
-            "postScriptFile":""
-            
+            "postScriptFile":"C"
         },
         {
             "type": "POST",
             "path": "postuser",
-            "serverURL": "createCustomer",
-            "accessType": "E",
+            "microserviceURL": "createCustomer",
+            "accessToken": "E",
             "tokenMapping": {"token": "bearerToken"},
             "tokenSuffix":""
         },
         {
             "type": "PUT",
             "path": "putuser",
-            "serverURL": "updateCustomer",
+            "microserviceURL": "updateCustomer",
             "mapping": [{
                 "name": "username",
                 "email": "emailId"
             }],
-            "accessType": "C",
+            "accessToken": "C",
             "tokenMapping": {"token": "bearerToken"}
         }
     ]
