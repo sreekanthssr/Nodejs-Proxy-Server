@@ -5,6 +5,7 @@ import valiateAPIConfig from'./common/api-validator.js';
 import express from 'express';
 const app = express();
 const apiConfig = getAPIConfig();
+
 if(valiateAPIConfig(apiConfig)){
   app.all('**', function (req, res) {
     res.send('hello world');
