@@ -14,7 +14,8 @@ export default function valiateAPIConfig(apiConfig){
     } catch(e){
         logMessage(`API configuration validation ${e}`);
         return false;
-    }    
+    }  
+    return true;  
 }
 
 function basicValidator(apiConfigJSON){
@@ -46,7 +47,7 @@ function basicValidator(apiConfigJSON){
         logMessage(`Basic validation failed ${e}`);
         return false;
     }
-    flag && logMessage(message);
+    !flag && logMessage(message);
     return flag;
 }
 function validateAPIs(apiConfigJSON){
@@ -54,7 +55,7 @@ function validateAPIs(apiConfigJSON){
     let message = "";
     try{
         apiConfigJSON.apis.forEach((apiDef,i) => {
-            if(!checkType(apiDef)){
+            if(!checkType(apiDef.type)){
                 flag = false;
                 message = `${message}API-${i} : Type not supported`;
             }
@@ -66,6 +67,11 @@ function validateAPIs(apiConfigJSON){
                 flag = false;
                 message = `${message}API-${i} : Should be valid microserviceURL`;
             }
+            if(!checkType(apiDef.microserviceType)){
+                flag = false;
+                message = `${message}API-${i} : Type not supported`;
+            }
+            //Need to put validator for microserviceResponseType
             if(!checkScriptType(apiDef,'pre',apiConfigJSON)){
                 flag = false;
                 message = `${message}API-${i} : Invalid pre script type or missing info`;
@@ -73,8 +79,8 @@ function validateAPIs(apiConfigJSON){
             if(!checkScriptType(apiDef,'post',apiConfigJSON)){
                 flag = false;
                 message = `${message}API-${i} : Invalid post script type or missing info`;
-            }
-            if(checkValidString(apiDef,'accessTokenSetting') && checkTokenSetting(apiDef.accessTokenSetting,apiDef,apiConfigJSON)){ }
+            }//checkValidString(apiDef,'accessTokenSetting') &&
+            if( checkTokenSetting(apiDef.accessTokenSetting,apiDef,apiConfigJSON)){ }
             else {
                 flag = false;
                 message = `${message}API-${i} : Invalid token setting`;  
@@ -96,12 +102,12 @@ function validateAPIs(apiConfigJSON){
         logMessage(`API validation failed ${e}`);
         return false;
     }
-    flag && logMessage(message);
+    !flag && logMessage(message);
     return flag;
 }
-function checkType(apiDef){
+function checkType(type){
     const supportedAPITypes = ['post','get','put','delete'];
-    return apiDef.type && supportedAPITypes.includes(apiDef.type.toLowerCase())
+    return type && supportedAPITypes.includes(type.toLowerCase())
 }
 function checkPath(apiDef){
     return apiDef.path && apiDef.path.length && typeof apiDef.path == "string";
@@ -124,8 +130,7 @@ function checkScriptType(apiDef, prefix, apiConfigJSON){
                     flag = checkScript(scriptFile);
                     break;
                 default:
-                    logMessage(`Script type not supported`);
-                    flag = false;
+                    flag = true;
             }
         }        
     } catch (e) {

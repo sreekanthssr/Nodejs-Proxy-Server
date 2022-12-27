@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "baseURL": "http://localhost:3001/",
+    "baseURL": "http://localhost:3001",
     "preScriptFile":"",
     "postScriptFile":"",
     "preCommonFunction":"",
@@ -15,8 +15,11 @@
     },
     "apis": [{
             "type": "GET",
-            "path": "getuser",
-            "microserviceURL": "getCustomer",
+            "path": "/getuser",
+            "responseType" : "json",
+            "microserviceURL": "/getCustomer",
+            "microserviceType" : "GET",
+            "microserviceResponseType" : "json",
             "appendBasePath": true,
             "preScriptType":"",  
             "preScriptFunction":"",          
@@ -24,32 +27,13 @@
             "postScriptType":"",
             "postScriptFunction":"",
             "postScriptFile":"",
-            "accessTokenSetting": "E",
+            "accessTokenSetting": "",
             "tokenMapping": {"token": "bearerToken"},
             "tokenSuffix":"",
             "mapping": [{
                 "name": "username",
                 "email": "emailId"
             }]
-        },
-        {
-            "type": "POST",
-            "path": "postuser",
-            "microserviceURL": "createCustomer",
-            "accessTokenSetting": "E",
-            "tokenMapping": {"token": "bearerToken"},
-            "tokenSuffix":""
-        },
-        {
-            "type": "PUT",
-            "path": "putuser",
-            "microserviceURL": "updateCustomer",
-            "mapping": [{
-                "name": "username",
-                "email": "emailId"
-            }],
-            "accessTokenSetting": "C",
-            "tokenMapping": {"token": "bearerToken"}
         }
     ]
 }

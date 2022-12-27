@@ -36,3 +36,60 @@ Sample API config JSON
         }
     ]
 }
+
+
+{
+    "version": "1.0.0",
+    "baseURL": "http://localhost:3001/",
+    "preScriptFile":"",
+    "postScriptFile":"",
+    "preCommonFunction":"",
+    "postCommonFunction":"",
+    "createTokenConfig": {
+        "url":"",
+        "header":{},
+        "methode":"",
+        "data":"",
+        "tokenName":"",
+        "tokenSuffix":""
+    },
+    "apis": [{
+            "type": "GET",
+            "path": "getuser",
+            "microserviceURL": "getCustomer",
+            "appendBasePath": true,
+            "preScriptType":"",  
+            "preScriptFunction":"",          
+            "preScriptFile":"",
+            "postScriptType":"",
+            "postScriptFunction":"",
+            "postScriptFile":"",
+            "accessTokenSetting": "E",
+            "tokenMapping": {"token": "bearerToken"},
+            "tokenSuffix":"",
+            "mapping": [{
+                "name": "username",
+                "email": "emailId"
+            }]
+        },
+        {
+            "type": "POST",
+            "path": "postuser",
+            "microserviceURL": "createCustomer",
+            "accessTokenSetting": "E",
+            "tokenMapping": {"token": "bearerToken"},
+            "tokenSuffix":""
+        },
+        {
+            "type": "PUT",
+            "path": "putuser",
+            "microserviceURL": "updateCustomer",
+            "mapping": [{
+                "name": "username",
+                "email": "emailId"
+            }],
+            "accessTokenSetting": "C",
+            "tokenMapping": {"token": "bearerToken"}
+        }
+    ]
+}
