@@ -1,24 +1,59 @@
 import fs from 'fs';
-import path,{ dirname } from 'path';
-import { fileURLToPath } from 'url';
+import path, {
+  dirname
+} from 'path';
+import {
+  fileURLToPath
+} from 'url';
 import logMessage from './log.js';
-function checkValidString(jsonObject, key){
-    return jsonObject && key && jsonObject.hasOwnProperty(key) && typeof jsonObject[key]&& jsonObject[key].length
+
+const checkValidString = (jsonObject, key) => {
+  return jsonObject && key && jsonObject.hasOwnProperty(key) && typeof jsonObject[key] && jsonObject[key].length
 }
 
 
-function getFileContent(filename,dir){
-    try {
-        let fileNameWithPath = `${dir}${filename}`;
-        const __dirname = dirname(fileURLToPath(fileNameWithPath));
-        const tempPath = path.join(__dirname,filename);
-        const apiConfig = fs.readFileSync(tempPath, 'utf8');
-        return apiConfig; 
-    } catch (error) {
-        logMessage(`API configuration validation ${error}`); 
-    }
-    return null;
+const getFileContent = (filename, dir) => {
+  try {
+    let fileNameWithPath = `${dir}${filename}`;
+    const __dirname = dirname(fileURLToPath(fileNameWithPath));
+    const tempPath = path.join(__dirname, filename);
+    const apiConfig = fs.readFileSync(tempPath, 'utf8');
+    return apiConfig;
+  } catch (error) {
+    logMessage(`API configuration validation ${error}`);
+  }
+  return null;
+}
+
+const checkValidJSON = (object) => {
+  let flag = false;
+  try {
+    if(object){
+      let temp = null;
+      switch (typeof object) {
+        case 'string':
+          temp = JSON.parse(object);
+          flag = true;
+          break;
+        case 'object':
+          temp = JSON.parse(JSON.stringify(object));
+          flag = true;
+          break;
+        default: 
+         flag = false;
+      }
+      return flag;
+    } 
+    return flag;
+  } catch (e) {
+    logMessage(e);
+    return false;
+  }
 }
 
 
-export {checkValidString, getFileContent} 
+export {
+  checkValidString,
+  getFileContent,
+  checkValidJSON
+}

@@ -7,19 +7,20 @@
     "postCommonFunction":"",
     "createTokenConfig": {
         "url":"",
-        "header":{},
+        "headers":{},
         "methode":"",
         "data":"",
+        "tokenKey":"",
         "tokenName":"",
         "tokenSuffix":""
     },
     "apis": [{
-            "type": "GET",
+            "type": "POST",
             "path": "/getuser",
             "responseType" : "json",
             "microserviceURL": "/getCustomer",
-            "microserviceType" : "GET",
-            "microserviceResponseType" : "json",
+            "microserviceType" : "POST",
+            "microserviceResponseType" : "text",
             "appendBasePath": true,
             "preScriptType":"",  
             "preScriptFunction":"",          
@@ -27,13 +28,14 @@
             "postScriptType":"",
             "postScriptFunction":"",
             "postScriptFile":"",
-            "accessTokenSetting": "",
-            "tokenMapping": {"token": "bearerToken"},
+            "accessTokenSetting": "E",
+            "tokenMapping": {"frontEndKey":"token", "MSKey":"bearerToken"},
             "tokenSuffix":"",
-            "mapping": [{
+            "dataMapping": {
                 "name": "username",
                 "email": "emailId"
-            }]
+            },
+            "headers":{}
         }
     ]
 }

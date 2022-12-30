@@ -181,8 +181,8 @@ function checkTokenSetting(accessTokenSetting,apiDef,apiConfigJSON){
                 }
                 break;
             case 'C':
-                if((apiConfigJSON.hasOwnProperty('createTokenConfig') && typeof apiConfigJSON.createTokenConfig == 'object') && checkTokenCreateSetting(apiConfigJSON.createTokenConfig) && 
-                checkTokenMapping(apiDef)){}
+                if((apiConfigJSON.hasOwnProperty('createTokenConfig') && typeof apiConfigJSON.createTokenConfig == 'object') && checkTokenCreateSetting(apiConfigJSON.createTokenConfig) /* && 
+                checkTokenMapping(apiDef) */){}
                 else{
                     flag = false;
                     logMessage(`Please provide valid token genration setting`);
