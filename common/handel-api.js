@@ -5,21 +5,23 @@ import {
   checkValidJSON
 } from './utils.js';
 
-const handelAPI = async (req, res, apiConfig) => {
+import apiResponse from './api-response.js';
+
+const handelAPI = async (req, res, apiConfigJSON) => {
   try {
-    const apiConfigJSON = JSON.parse(apiConfig);
-    const apiDef = getAPIDef(req, apiConfigJSON)
+    const apiDef = getAPIDef(req, apiConfigJSON);
     if (apiDef) {
       const options = await getRequestOptions(req, apiDef, apiConfigJSON);
       const response = await axios(options);
       res.status(response.status).send(response.data);
-      return;
+    } else {
+      apiResponse.send404(res);
     }
   } catch (e) {
     logMessage(e);
-    res.status(500).send('Something broke!');
+    return apiResponse.send500(res);
   }
-  res.status(500).send('Something broke!');
+  return apiResponse.send500(res);
 }
 
 const getAPIDef = (req, apiDef) => {
@@ -35,7 +37,7 @@ const getAPIDef = (req, apiDef) => {
 const getRequestURL = (apiDef, apiConfig) => {
   try {
     let url = '';
-    if (apiDef.hasOwnProperty('appendBasePath') && apiDef.appendBasePath === false) {} else {
+    if (apiDef?.appendBasePath && apiDef.appendBasePath === false) {} else {
       url = apiConfig.baseURL;
     }
     return `${url}${apiDef.microserviceURL}`;
@@ -50,7 +52,7 @@ const getRequestOptions = async (req, apiDef, apiConfigJSON) => {
     const url = getRequestURL(apiDef, apiConfigJSON);
     const method = apiDef.microserviceType;
     let headers = {};
-    if (apiDef.hasOwnProperty('headers') && checkValidJSON(apiDef.headers)){
+    if (apiDef?.headers && checkValidJSON(apiDef.headers)){
       headers = apiDef.headers;
     }
     const token = await setToken(req,apiDef,apiConfigJSON);
@@ -80,7 +82,7 @@ const getRequestOptions = async (req, apiDef, apiConfigJSON) => {
 
 const formatePostData = (postData, apiDef) => {
   try {
-    if (apiDef.hasOwnProperty('dataMapping') && typeof apiDef.dataMapping && Object.keys(apiDef.dataMapping)) {
+    if (apiDef?.dataMapping && typeof apiDef.dataMapping && Object.keys(apiDef.dataMapping)) {
       let data = {};
       for (const key in apiDef.dataMapping) {
         const msKey = apiDef.dataMapping[key];
@@ -99,7 +101,7 @@ const formatePostData = (postData, apiDef) => {
 const setToken = async (req, apiDef, apiConfigJSON) => {
   let returnValue = null;
   try {
-    if (apiDef.hasOwnProperty('accessTokenSetting') && (apiDef.accessTokenSetting === 'E' || apiDef.accessTokenSetting === 'C')) {
+    if (apiDef?.accessTokenSetting) {
       switch (apiDef.accessTokenSetting) {
         case 'E':
           returnValue = getExistingToken(req, apiDef);

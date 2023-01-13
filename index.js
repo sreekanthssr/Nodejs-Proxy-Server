@@ -6,7 +6,7 @@ import valiateAPIConfig from'./common/api-validator.js';
 import handelAPI from './common/handel-api.js';
 dotenv.config();
 
-const apiConfig = getAPIConfig();
+const apiConfig = await getAPIConfig();
 
 if(valiateAPIConfig(apiConfig)){
   const app = express();
