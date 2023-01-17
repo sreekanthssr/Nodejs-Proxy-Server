@@ -63,31 +63,19 @@ function optionalConfigValidation(apiConfigJSON) {
   let flag = true;
   try {
     if (apiConfigJSON) {
-      if(apiConfigJSON?.preCommonFunction){
-        if(apiConfigJSON?.preScriptFile){
-          const preScriptFileValidate = checkScript(apiConfigJSON.preScriptFile, 'pre', apiConfigJSON.preCommonFunction);
-          if(preScriptFileValidate === true){}
-          else{
-            message = `${message} Please check pre script file and pre script function\n`;
-            flag = false;
-          }
-        } else {
-          message = `${message} Not a valid pre script file \n`;
-          flag = false;
-        }
+      const checkPreCommon = checkCommonFunction(apiConfigJSON, 'pre');
+      if(checkPreCommon === true){
+        flag =  true;
+      } else {
+        message = `${message} Please check pre script file and pre script function\n`;
+        flag = false;
       }
-      if(apiConfigJSON?.postCommonFunction){
-        if(apiConfigJSON?.postScriptFile){
-          const postScriptFileValidate = checkScript(apiConfigJSON.postScriptFile, 'post', apiConfigJSON.postCommonFunction);
-          if(postScriptValidate === true){}
-          else{
-            message = `${message} Please check post script file and post script function\n`;
-            flag = false;
-          }
-        } else {
-          message = `${message} Not a valid post script file \n`;
-          flag = false;
-        }
+      const checkPostCommon = checkCommonFunction(apiConfigJSON, 'post');
+      if(checkPostCommon === true){
+        flag =  true;
+      } else {
+        message = `${message} Please check post script file and pre script function\n`;
+        flag = false;
       }
     }
   } catch (e) {
@@ -189,7 +177,7 @@ function checkScriptType(apiDef, prefix, apiConfigJSON) {
     const scriptFile = apiDef[`${prefix}ScriptFile`];
     switch (scriptType) {
       case 'C':
-        return checkCommonFunction(apiConfigJSON, scriptFunction, prefix);
+        return checkCommonFile(apiConfigJSON, scriptFunction, prefix);
       case 'F':
         return checkScript(scriptFile, prefix);
       default:
@@ -200,7 +188,7 @@ function checkScriptType(apiDef, prefix, apiConfigJSON) {
   }
 }
 
-function checkCommonFunction(apiConfigJSON, scriptFunction, prefix) {
+function checkCommonFile(apiConfigJSON, scriptFunction, prefix) {
   try {
     let key = `${prefix}ScriptFile`;
     if (checkValidString(apiConfigJSON, key)) {
@@ -287,4 +275,23 @@ function checkTokenMapping(apiDef) {
     return false;
   }
   return true;
+}
+
+function checkCommonFunction(apiConfigJSON, prefix){
+  try{
+    const commonFunction = apiConfigJSON.hasOwnProperty(`${prefix}CommonFunction`) ? apiConfigJSON[`${prefix}CommonFunction`] : null;
+    if(commonFunction){
+      const commonScriptFile = apiConfigJSON.hasOwnProperty(`${prefix}ScriptFile`) ? apiConfigJSON[`${prefix}ScriptFile`] : null;
+      if(commonScriptFile){
+        return checkScript(commonScriptFile, prefix, commonFunction);
+      } else {
+        return `Not a valid ${prefix} script file`;
+      }
+    }
+  } catch(e){
+    logMessage(`Error in ${prefix} common function ${e}`);
+    return false;
+  }
+  return true;
+  
 }
