@@ -3,11 +3,15 @@ import validUrl from 'valid-url';
 import vm from 'vm';
 import {
   checkValidString,
-  getFileContent
+  getFileContent,
+  checkValidJSON
 } from './utils.js';
 export default function valiateAPIConfig(apiConfigJSON) {
   try {
     if (!basicValidator(apiConfigJSON)) {
+      return false;
+    }
+    if (!optionalConfigValidation(apiConfigJSON)) {
       return false;
     }
     if (!validateAPIs(apiConfigJSON)) {
@@ -54,6 +58,46 @@ function basicValidator(apiConfigJSON) {
   return flag;
 }
 
+function optionalConfigValidation(apiConfigJSON) {
+  let message = "";
+  let flag = true;
+  try {
+    if (apiConfigJSON) {
+      if(apiConfigJSON?.preCommonFunction){
+        if(apiConfigJSON?.preScriptFile){
+          const preScriptFileValidate = checkScript(apiConfigJSON.preScriptFile, 'pre', apiConfigJSON.preCommonFunction);
+          if(preScriptFileValidate === true){}
+          else{
+            message = `${message} Please check pre script file and pre script function\n`;
+            flag = false;
+          }
+        } else {
+          message = `${message} Not a valid pre script file \n`;
+          flag = false;
+        }
+      }
+      if(apiConfigJSON?.postCommonFunction){
+        if(apiConfigJSON?.postScriptFile){
+          const postScriptFileValidate = checkScript(apiConfigJSON.postScriptFile, 'post', apiConfigJSON.postCommonFunction);
+          if(postScriptValidate === true){}
+          else{
+            message = `${message} Please check post script file and post script function\n`;
+            flag = false;
+          }
+        } else {
+          message = `${message} Not a valid post script file \n`;
+          flag = false;
+        }
+      }
+    }
+  } catch (e) {
+    logMessage(`Optional Config Validation failed ${e}`);
+    return false;
+  }
+  !flag && logMessage(message);
+  return flag;
+}
+
 function validateAPIs(apiConfigJSON) {
   let flag = true;
   let message = "";
@@ -75,16 +119,17 @@ function validateAPIs(apiConfigJSON) {
         flag = false;
         message = `${message}API-${i} : Microservice type not supported\n`;
       }
-      //Need to put validator for microserviceResponseType
+      if (!checkResponseType(apiDef.microserviceResponseType)) {
+        flag = false;
+        message = `${message}API-${i} : Microservice Response Type type not supported\n`;
+      }
       const preScriptCheck = checkScriptType(apiDef, 'pre', apiConfigJSON)
-      if (preScriptCheck === true ) { }
-      else{
+      if (preScriptCheck === true) {} else {
         flag = false;
         message = `${message}API-${i} :${preScriptCheck}\n`;
       }
       const postScriptCheck = checkScriptType(apiDef, 'post', apiConfigJSON)
-      if (postScriptCheck === true) {}
-      else {
+      if (postScriptCheck === true) {} else {
         flag = false;
         message = `${message}API-${i} : ${postScriptCheck}\n`;
       } //checkValidString(apiDef,'accessTokenSetting') &&
@@ -99,6 +144,18 @@ function validateAPIs(apiConfigJSON) {
           message = `${message}API-${i} : Invalid tokenSuffix\n`;
         }
       }
+      if (apiDef?.dataMapping) {
+        if (!checkValidJSON(apiDef.dataMapping)) {
+          flag = false;
+          message = `${message}API-${i} : Invalid Data Mapping. Should be in JSON`;
+        }
+      }
+      if (apiDef?.headers) {
+        if (!checkValidJSON(apiDef.headers)) {
+          flag = false;
+          message = `${message}API-${i} : Invalid Headers. Should be in JSON`;
+        }
+      }
     });
   } catch (e) {
     logMessage(`API validation failed ${e}`);
@@ -109,7 +166,12 @@ function validateAPIs(apiConfigJSON) {
 
 function checkType(type) {
   const supportedAPITypes = ['post', 'get', 'put', 'delete'];
-  return type && supportedAPITypes.includes(type.toLowerCase())
+  return type && supportedAPITypes.includes(type.toLowerCase());
+}
+
+function checkResponseType(type) {
+  const supportedResponseType = ['arraybuffer', 'document', 'json', 'text', 'stream'];
+  return type && supportedResponseType.includes(type.toLowerCase());
 }
 
 function checkPath(apiDef) {
@@ -125,14 +187,14 @@ function checkScriptType(apiDef, prefix, apiConfigJSON) {
     const scriptType = apiDef[`${prefix}ScriptType`];
     const scriptFunction = apiDef[`${prefix}ScriptFunction`];
     const scriptFile = apiDef[`${prefix}ScriptFile`];
-      switch (scriptType) {
-        case 'C':
-          return checkCommonFunction(apiConfigJSON, scriptFunction, prefix);
-        case 'F':
-          return checkScript(scriptFile, prefix);
-        default:
-          return true;
-      }
+    switch (scriptType) {
+      case 'C':
+        return checkCommonFunction(apiConfigJSON, scriptFunction, prefix);
+      case 'F':
+        return checkScript(scriptFile, prefix);
+      default:
+        return true;
+    }
   } catch (e) {
     return `Validation error in script ${e}`;
   }
@@ -142,8 +204,7 @@ function checkCommonFunction(apiConfigJSON, scriptFunction, prefix) {
   try {
     let key = `${prefix}ScriptFile`;
     if (checkValidString(apiConfigJSON, key)) {
-      if(scriptFunction && typeof scriptFunction === "string"){}
-      else{
+      if (scriptFunction && typeof scriptFunction === "string") {} else {
         return `Enter valid ${prefix}ScriptFunction`;
       }
       let commonFileContent = getFileContent(apiConfigJSON[key]);
@@ -160,20 +221,23 @@ function checkCommonFunction(apiConfigJSON, scriptFunction, prefix) {
   }
 }
 
-function checkScript(scriptFile, prefix) {
-  
-    try {
-      if(scriptFile && typeof scriptFile === "string"){
-        let scriptFileContent = getFileContent(scriptFile);
-        const scriptValidation = new vm.Script(scriptFileContent);
-        return true;
+function checkScript(scriptFile, prefix, functionName = null) {
+  try {
+    if (scriptFile && typeof scriptFile === "string") {
+      let scriptFileContent = getFileContent(scriptFile);
+      if(functionName){
+        if(!scriptFileContent.includes(functionName)){
+          return `${prefix}ScriptFile function missing`
+        }
       }
-      else {
-        return `${prefix}ScriptFile missing`;
-      }
-    } catch (e) {
-      return `${scriptFile} have error ${e}`;
+      const scriptValidation = new vm.Script(scriptFileContent);
+      return true;
+    } else {
+      return `${prefix}ScriptFile missing`;
     }
+  } catch (e) {
+    return `${scriptFile} have error ${e}`;
+  }
 }
 //****token key should validate */
 function checkTokenSetting(accessTokenSetting, apiDef, apiConfigJSON) {
@@ -185,18 +249,17 @@ function checkTokenSetting(accessTokenSetting, apiDef, apiConfigJSON) {
         }
         return true;
       case 'C':
-        
         if ((apiConfigJSON?.createTokenConfig && typeof apiConfigJSON.createTokenConfig == 'object')) {
-          const checkTokenConfig =  checkTokenCreateSetting(apiConfigJSON.createTokenConfig);
-          if(checkTokenConfig === true){
+          const checkTokenConfig = checkTokenCreateSetting(apiConfigJSON.createTokenConfig);
+          if (checkTokenConfig === true) {
             return true;
           }
           return checkTokenConfig;
         } else {
           return `Please provide valid token genration setting`;
         }
-      default:
-        return true;
+        default:
+          return true;
     }
   } catch (e) {
     return `Error in accessTokenSetting ${e}`;

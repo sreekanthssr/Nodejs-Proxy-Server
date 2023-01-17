@@ -11,16 +11,16 @@ const apiDef = {
     "tokenSuffix":""
   },
   "preScriptFile": "./common-pre.js",
-  "postScriptFile": "./common-pre.js",
-  "preCommonFunction":"",//Validation needed
-  "postCommonFunction":"",//Validation needed
+  "postScriptFile": "",
+  "preCommonFunction":"testPre",
+  "postCommonFunction":"",
   apis: [{
     "type": "get",
     "path": "/user",
     "microserviceURL": "/getCustomer",
     "microserviceType" : "POST",
-    "responseType" : "jssdfdson",//Validation needed
-    "microserviceResponseType" : "text",//Validation needed
+    //"responseType" : "jssdfdson",//Validation needed
+    "microserviceResponseType" : "text",
     "appendBasePath": true,
     "accessTokenSetting": "C",    
     "tokenMapping": {"frontEndKey":"token", "MSKey":"bearerToken"},
@@ -30,16 +30,13 @@ const apiDef = {
     "postScriptType":"F",
     "postScriptFunction":"testPre",
     "postScriptFile":"./common-pre.js",
-    "dataMapping": {
+    "dataMapping": `{
       "name": "username",
       "email": "emailId"
-    },//need to validate
-    "headers":""//need to validate
+    }`,
+    "headers":'{"a":1}'
   }]
-  /* "preScriptFile":"",
-  "postScriptFile":"",
-  ,
-  */
+ 
 
 }
 
