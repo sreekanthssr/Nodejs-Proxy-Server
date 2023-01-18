@@ -293,5 +293,4 @@ function checkCommonFunction(apiConfigJSON, prefix){
     return false;
   }
   return true;
-  
 }

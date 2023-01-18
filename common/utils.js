@@ -52,10 +52,14 @@ const checkValidJSON = (object) => {
     return false;
   }
 }
-
+const getAbsoultFileWPath = (fileName) =>{
+  const __dirname = dirname(fileURLToPath(import.meta.url));
+  return path.join(__dirname, `./../${fileName}`);
+}
 
 export {
   checkValidString,
   getFileContent,
-  checkValidJSON
+  checkValidJSON,
+  getAbsoultFileWPath
 }

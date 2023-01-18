@@ -2,6 +2,7 @@ import fs from 'fs';
 import path, {dirname} from 'path';
 import {fileURLToPath} from 'url';
 import logMessage from './log.js';
+import { getAbsoultFileWPath } from "./utils.js";
 
 export default async function getAPIConfig() {
   try {
@@ -26,10 +27,8 @@ export default async function getAPIConfig() {
 }
 
 const readJsonFile = (fileName) => {
-  try {
-    const __dirname = dirname(fileURLToPath(
-      import.meta.url));
-    const apiConfigFileName = path.join(__dirname, `./../${fileName}`);
+  try {    
+    const apiConfigFileName = getAbsoultFileWPath(fileName);
     const apiConfig = fs.readFileSync(apiConfigFileName, 'utf8');
     return JSON.parse(apiConfig);
   } catch (error) {
@@ -40,13 +39,12 @@ const readJsonFile = (fileName) => {
 
 const readJSFile = async (fileName) =>{
   try{
-    const __dirname = dirname(fileURLToPath(
-    import.meta.url));
-    const apiConfigFileName = path.join(__dirname, `./../${fileName}`);
+    const apiConfigFileName = getAbsoultFileWPath(fileName);
     return (await import(apiConfigFileName)).default;
   } catch(error){
     logMessage(`API configuration File -${error}`);
   }
-  return null;
-  
+  return null;  
 }
+
+

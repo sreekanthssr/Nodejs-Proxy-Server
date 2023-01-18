@@ -34,7 +34,9 @@ const apiDef = {
       "name": "username",
       "email": "emailId"
     }`,
-    "headers":'{"a":1}'
+    "headers":'{"a":1}',
+    "excuteCommonPreFunction": true,//by default true
+    "excuteCommonPostFunction": true,//by default true
   }]
  
 
