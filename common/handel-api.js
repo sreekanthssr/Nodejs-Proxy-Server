@@ -16,7 +16,7 @@ const handelAPI = async (req, res, apiConfigJSON) => {
       options = await excutePreScript(apiDef, apiConfigJSON, options, req);
       let microServiceResponse = await axios(options);
       microServiceResponse = await excutePostScript(apiDef, apiConfigJSON, req, res, microServiceResponse);
-      res.status(microServiceResponse.status).send(microServiceResponse.data);
+      return res.status(microServiceResponse.status).send(microServiceResponse.data);
     } else {
       apiResponse.send404(res);
     }
@@ -40,7 +40,7 @@ const getAPIDef = (req, apiDef) => {
 const getRequestURL = (apiDef, apiConfig) => {
   try {
     let url = '';
-    if (apiDef?.appendBasePath && apiDef.appendBasePath === false) {} else {
+    if (apiDef.hasOwnProperty('appendBasePath') && apiDef.appendBasePath === false) {} else {
       url = apiConfig.baseURL;
     }
     return `${url}${apiDef.microserviceURL}`;
@@ -55,7 +55,7 @@ const getRequestOptions = async (req, apiDef, apiConfigJSON) => {
     const url = getRequestURL(apiDef, apiConfigJSON);
     const method = apiDef.microserviceType;
     let headers = {};
-    if (apiDef?.headers && checkValidJSON(apiDef.headers)) {
+    if (apiDef.hasOwnProperty('headers') && checkValidJSON(apiDef.headers)) {
       headers = apiDef.headers;
     }
     const token = await setToken(req, apiDef, apiConfigJSON);
@@ -85,7 +85,7 @@ const getRequestOptions = async (req, apiDef, apiConfigJSON) => {
 
 const formatePostData = (postData, apiDef) => {
   try {
-    if (apiDef?.dataMapping && typeof apiDef.dataMapping && Object.keys(apiDef.dataMapping)) {
+    if (apiDef.hasOwnProperty('dataMapping') && typeof apiDef.dataMapping && Object.keys(apiDef.dataMapping)) {
       let data = {};
       for (const key in apiDef.dataMapping) {
         const msKey = apiDef.dataMapping[key];
@@ -104,7 +104,7 @@ const formatePostData = (postData, apiDef) => {
 const setToken = async (req, apiDef, apiConfigJSON) => {
   let returnValue = null;
   try {
-    if (apiDef?.accessTokenSetting) {
+    if (apiDef.hasOwnProperty('accessTokenSetting')) {
       switch (apiDef.accessTokenSetting) {
         case 'E':
           returnValue = getExistingToken(req, apiDef);
@@ -159,7 +159,7 @@ const createToken = async (apiDef, apiConfigJSON) => {
 const excutePreScript = async (apiDef, apiConfigJSON, options, req) => {
   try {
     let updatedOptions = options;
-    if(apiDef?.excuteCommonPreFunction && apiDef.excuteCommonPreFunction === false){}
+    if(apiDef.hasOwnProperty('excuteCommonPreFunction') && apiDef.excuteCommonPreFunction === false){}
     else {
       const commonFunction = await getCommonFunction(apiConfigJSON, 'pre');
       updatedOptions = await (commonFunction) ? commonFunction (updatedOptions, req): updatedOptions;
@@ -175,7 +175,7 @@ const excutePostScript = async (apiDef, apiConfigJSON, req, res, microServiceRes
   try {
     const excutionFunction = await getExcutionFunction(apiDef, apiConfigJSON, 'post');
     let updatedMSResponse =  await (excutionFunction) ? excutionFunction(req, res, microServiceResponse) : microServiceResponse;
-    if(apiDef?.excuteCommonPostFunction && apiDef.excuteCommonPostFunction === false){}
+    if(apiDef.hasOwnProperty('excuteCommonPostFunction') && apiDef.excuteCommonPostFunction === false){}
     else {
       const commonFunction = await getCommonFunction(apiConfigJSON, 'post');
       updatedMSResponse = await (commonFunction) ? commonFunction(req, res, updatedMSResponse): updatedMSResponse;
@@ -189,7 +189,7 @@ const excutePostScript = async (apiDef, apiConfigJSON, req, res, microServiceRes
 
 const getExcutionFunction = async (apiDef, apiConfigJSON, prefix) =>{
   try {    
-    const scriptType = apiDef.hasOwnProerty(`${prefix}ScriptType`) ? apiDef[`${prefix}ScriptType`] : null;
+    const scriptType = apiDef.hasOwnProperty(`${prefix}ScriptType`) ? apiDef[`${prefix}ScriptType`] : null;
     let fileName = null;
     switch(scriptType){
       case 'F':
@@ -211,10 +211,13 @@ const getExcutionFunction = async (apiDef, apiConfigJSON, prefix) =>{
 
 const getCommonFunction = async (apiConfigJSON, prefix) =>{
   try {
-    const fileName = getAbsoultFileWPath(apiConfigJSON[`${prefix}ScriptFile`]);
-    const functionName = apiDef[`${prefix}CommonFunction`];
-    const fileContenet = await import(fileName);
-    return fileContenet[functionName] || null;
+    const functionName = apiConfigJSON[`${prefix}CommonFunction`];
+    if(functionName){
+      const fileName = getAbsoultFileWPath(apiConfigJSON[`${prefix}ScriptFile`]);
+      const fileContenet = await import(fileName);
+      return fileContenet[functionName] || null;
+    }
+    return null;
   } catch (e) {
     logMessage(e);
     return null;

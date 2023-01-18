@@ -1,6 +1,19 @@
 const apiDef = {
   "version": "1.0.0",
   "baseURL": "http://localhost:3001",
+  apis: [{
+    "type": "get",
+    "path": "/user",
+    "microserviceURL": "/getCustomer",
+    "microserviceType" : "POST",
+    "responseType": "json",
+    "appendBasePath": true,
+    "accessTokenSetting": "C",//C or E
+  }]
+}
+/*
+"version": "1.0.0",
+  "baseURL": "http://localhost:3001",
   "createTokenConfig": {
     "url":"http://localhost:3001/auth",
     "headers":{"sdf":"sdf"},
@@ -38,8 +51,6 @@ const apiDef = {
     "excuteCommonPreFunction": true,//by default true
     "excuteCommonPostFunction": true,//by default true
   }]
- 
-
-}
+*/
 
 export default apiDef;

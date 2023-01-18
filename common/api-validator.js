@@ -29,18 +29,18 @@ function basicValidator(apiConfigJSON) {
   let flag = true;
   try {
     if (apiConfigJSON) {
-      if (!apiConfigJSON?.version) {
+      if (!apiConfigJSON.hasOwnProperty('version')) {
         message = "Version is missing \n";
         flag = false;
       }
-      if (!apiConfigJSON?.baseURL) {
+      if (!apiConfigJSON.hasOwnProperty('baseURL')) {
         message = `${message}Base URL is missing \n`;
         flag = false;
       } else if (!validUrl.isUri(apiConfigJSON.baseURL)) {
         message = `${message}Invalid baseURL \n`;
         flag = false;
       }
-      if (!apiConfigJSON?.apis) {
+      if (!apiConfigJSON.hasOwnProperty('apis')) {
         message = `${message}APIs is missing \n`;
         flag = false;
       } else if (!Array.isArray(apiConfigJSON.apis)) {
@@ -107,7 +107,7 @@ function validateAPIs(apiConfigJSON) {
         flag = false;
         message = `${message}API-${i} : Microservice type not supported\n`;
       }
-      if (!checkResponseType(apiDef.microserviceResponseType)) {
+      if (apiDef.hasOwnProperty('microserviceResponseType') && !checkResponseType(apiDef.microserviceResponseType)) {
         flag = false;
         message = `${message}API-${i} : Microservice Response Type type not supported\n`;
       }
@@ -126,19 +126,19 @@ function validateAPIs(apiConfigJSON) {
         flag = false;
         message = `${message}API-${i} : Invalid token setting\n${tokenValidation}`;
       }
-      if (apiDef?.tokenSuffix) {
+      if (apiDef.hasOwnProperty('tokenSuffix')) {
         if (typeof apiDef.tokenSuffix != "string") {
           flag = false;
           message = `${message}API-${i} : Invalid tokenSuffix\n`;
         }
       }
-      if (apiDef?.dataMapping) {
+      if (apiDef.hasOwnProperty('dataMapping')) {
         if (!checkValidJSON(apiDef.dataMapping)) {
           flag = false;
           message = `${message}API-${i} : Invalid Data Mapping. Should be in JSON`;
         }
       }
-      if (apiDef?.headers) {
+      if (apiDef.hasOwnProperty('headers')) {
         if (!checkValidJSON(apiDef.headers)) {
           flag = false;
           message = `${message}API-${i} : Invalid Headers. Should be in JSON`;
@@ -237,7 +237,7 @@ function checkTokenSetting(accessTokenSetting, apiDef, apiConfigJSON) {
         }
         return true;
       case 'C':
-        if ((apiConfigJSON?.createTokenConfig && typeof apiConfigJSON.createTokenConfig == 'object')) {
+        if ((apiConfigJSON.hasOwnProperty('createTokenConfig') && typeof apiConfigJSON.createTokenConfig == 'object')) {
           const checkTokenConfig = checkTokenCreateSetting(apiConfigJSON.createTokenConfig);
           if (checkTokenConfig === true) {
             return true;
@@ -256,7 +256,7 @@ function checkTokenSetting(accessTokenSetting, apiDef, apiConfigJSON) {
 
 function checkTokenCreateSetting(createTokenConfig) {
   try {
-    if (checkValidString(createTokenConfig, 'url') && checkValidString(createTokenConfig, 'methode') && createTokenConfig?.headers && typeof createTokenConfig.headers == 'object') {
+    if (checkValidString(createTokenConfig, 'url') && checkValidString(createTokenConfig, 'methode') && createTokenConfig.hasOwnProperty('headers') && typeof createTokenConfig.headers == 'object') {
       return true;
     }
     return `Please provide valid token setup`;
@@ -267,7 +267,7 @@ function checkTokenCreateSetting(createTokenConfig) {
 
 function checkTokenMapping(apiDef) {
   try { //Validate keys
-    if (apiDef?.tokenMapping && typeof apiDef.tokenMapping == 'object') {} else {
+    if (apiDef.hasOwnProperty('tokenMapping') && typeof apiDef.tokenMapping == 'object') {} else {
       return false;
     }
   } catch (e) {
