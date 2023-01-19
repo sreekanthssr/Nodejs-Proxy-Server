@@ -1,6 +1,5 @@
 import logMessage from './log.js';
 import validUrl from 'valid-url';
-import vm from 'vm';
 import {
   checkValidString,
   getFileContent,
@@ -214,7 +213,6 @@ function checkScript(scriptFile, prefix, functionName = null) {
           return `${prefix}ScriptFile function missing`
         }
       }
-      //const scriptValidation = new vm.Script(scriptFileContent);
       return true;
     } else {
       return `${prefix}ScriptFile missing`;
