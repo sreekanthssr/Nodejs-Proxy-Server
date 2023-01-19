@@ -64,17 +64,13 @@ function optionalConfigValidation(apiConfigJSON) {
   try {
     if (apiConfigJSON) {
       const checkPreCommon = checkCommonFunction(apiConfigJSON, 'pre');
-      if(checkPreCommon === true){
-        flag =  true;
-      } else {
+      if(checkPreCommon !== true){
         message = `${message} Please check pre script file and pre script function\n`;
         flag = false;
       }
       const checkPostCommon = checkCommonFunction(apiConfigJSON, 'post');
-      if(checkPostCommon === true){
-        flag =  true;
-      } else {
-        message = `${message} Please check post script file and pre script function\n`;
+      if(checkPostCommon !== true){
+        message = `${message} Please check post script file and post script function\n`;
         flag = false;
       }
     }
@@ -218,12 +214,13 @@ function checkScript(scriptFile, prefix, functionName = null) {
           return `${prefix}ScriptFile function missing`
         }
       }
-      const scriptValidation = new vm.Script(scriptFileContent);
+      //const scriptValidation = new vm.Script(scriptFileContent);
       return true;
     } else {
       return `${prefix}ScriptFile missing`;
     }
   } catch (e) {
+    logMessage(e);
     return `${scriptFile} have error ${e}`;
   }
 }
@@ -256,7 +253,12 @@ function checkTokenSetting(accessTokenSetting, apiDef, apiConfigJSON) {
 
 function checkTokenCreateSetting(createTokenConfig) {
   try {
-    if (checkValidString(createTokenConfig, 'url') && checkValidString(createTokenConfig, 'methode') && createTokenConfig.hasOwnProperty('headers') && typeof createTokenConfig.headers == 'object') {
+    if (checkValidString(createTokenConfig, 'url') 
+        && checkValidString(createTokenConfig, 'methode') 
+        && createTokenConfig.hasOwnProperty('headers') 
+        && typeof createTokenConfig.headers == 'object'
+        && checkValidString(createTokenConfig, 'tokenName')
+        && checkValidString(createTokenConfig, 'tokenKey')  ) {
       return true;
     }
     return `Please provide valid token setup`;
@@ -288,9 +290,9 @@ function checkCommonFunction(apiConfigJSON, prefix){
         return `Not a valid ${prefix} script file`;
       }
     }
+    return true;
   } catch(e){
     logMessage(`Error in ${prefix} common function ${e}`);
     return false;
   }
-  return true;
 }

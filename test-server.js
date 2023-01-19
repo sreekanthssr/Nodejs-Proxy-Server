@@ -8,7 +8,11 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
   app.all('**', function (req, res) {
-    res.status(200).send(`${req.method} -- ${req.url} -- ${JSON.stringify(req.body)} ${JSON.stringify(req.headers)}`)
+    const resp = {
+      reqInfo: `${req.method} -- ${req.url} -- ${JSON.stringify(req.body)} ${JSON.stringify(req.headers)}`,
+      tokenName: "Test token"
+    }
+    res.status(200).send(resp)
   })
   
   app.listen(3001);
