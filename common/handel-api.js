@@ -124,9 +124,9 @@ const setToken = async (req, apiDef, apiConfigJSON) => {
 const getExistingToken = (req, apiDef) => {
   try {
     const tokenMapping = apiDef.tokenMapping;
-    const tokenSuffix = (checkValidString(apiDef, 'tokenSuffix')) ? apiDef.tokenSuffix : '';
+    const tokenPrefix = (checkValidString(apiDef, 'tokenPrefix')) ? apiDef.tokenPrefix : '';
     const token = {};
-    token[tokenMapping.MSKey] = `${tokenSuffix}${req.headers[tokenMapping.frontEndKey]}`;
+    token[tokenMapping.MSKey] = `${tokenPrefix}${req.headers[tokenMapping.frontEndKey]}`;
     return token;
   } catch (e) {
     logMessage(e);
@@ -145,9 +145,9 @@ const createToken = async (apiDef, apiConfigJSON) => {
       headers: apiConfigJSON.createTokenConfig.headers
     };
     const response = await axios(options);
-    const tokenSuffix = (checkValidString(apiConfigJSON.createTokenConfig, 'tokenSuffix')) ? apiConfigJSON.createTokenConfig.tokenSuffix : '';
+    const tokenPrefix = (checkValidString(apiConfigJSON.createTokenConfig, 'tokenPrefix')) ? apiConfigJSON.createTokenConfig.tokenPrefix : '';
     const token = {};
-    token[apiConfigJSON.createTokenConfig.tokenName] = `${tokenSuffix}${response.data[apiConfigJSON.createTokenConfig.tokenKey]}`;
+    token[apiConfigJSON.createTokenConfig.tokenName] = `${tokenPrefix}${response.data[apiConfigJSON.createTokenConfig.tokenKey]}`;
     return token;
   } catch (e) {
     logMessage(e);
@@ -197,7 +197,7 @@ const getExcutionFunction = async (apiDef, apiConfigJSON, prefix) =>{
         fileContent = await import(fileName);
         return fileContent.default || null;
       case 'C':
-        fileName = getAbsoultFileWPath(apiConfigJSON[`${prefix}ScriptFile`]);
+        fileName = getAbsoultFileWPath(apiConfigJSON[`${prefix}CommonScriptFile`]);
         const functionName = apiDef[`${prefix}ScriptFunction`];
         fileContent = await import(fileName);
         return fileContent[functionName] || null;
@@ -214,7 +214,7 @@ const getCommonFunction = async (apiConfigJSON, prefix) =>{
   try {
     const functionName = apiConfigJSON[`${prefix}CommonFunction`];
     if(functionName){
-      const fileName = getAbsoultFileWPath(apiConfigJSON[`${prefix}ScriptFile`]);
+      const fileName = getAbsoultFileWPath(apiConfigJSON[`${prefix}CommonScriptFile`]);
       const fileContenet = await import(fileName);
       return fileContenet[functionName] || null;
     }

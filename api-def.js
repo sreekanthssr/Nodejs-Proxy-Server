@@ -8,12 +8,12 @@ const apiDef = {
     "tokenKey":"tokenName",
     "tokenName":"Bearrr",
     "data":'{user:"ads"}',
-    "tokenSuffix":"1234"
+    "tokenPrefix":"1234"
   },
   "preCommonFunction": "commonPre",
-  "preScriptFile": "./common-pre.js",
+  "preCommonScriptFile": "./common-pre.js",
   "postCommonFunction": "commonPost",
-  "postScriptFile": "./common-pre.js",
+  "postCommonScriptFile": "./common-pre.js",
   apis: [{
     "type": "post",
     "path": "/user",
@@ -28,28 +28,17 @@ const apiDef = {
       "email": "emailId"
     },
     "headers":{"a":1},
-    "excuteCommonPreFunction": false,//by default true
-    "excuteCommonPostFunction": false,//by default true
+    "excuteCommonPreFunction": true,//by default true
+    "excuteCommonPostFunction": true,//by default true
     "preScriptType":"C",
     "preScriptFile":"./preScript.js",
     "postScriptType":"C",
     "postScriptFile":"./postScript.js",
     "preScriptFunction":"APIcommonPre",
     "postScriptFunction":"APIcommonPost",
+    "tokenPrefix": "Bearer"
   }]
 }
-/*
 
-  apis: [{
-      
-    
-    "preScriptType":"F",
-    "preScriptFunction":"testPre",
-    "preScriptFile":"./common-pre.js",
-    "postScriptType":"F",
-    "postScriptFunction":"testPre",
-    "postScriptFile":"./common-pre.js",
-  }]
-*/
 
 export default apiDef;

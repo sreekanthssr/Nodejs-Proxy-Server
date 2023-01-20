@@ -121,10 +121,10 @@ function validateAPIs(apiConfigJSON) {
         flag = false;
         message = `${message}API-${i} : Invalid token setting\n${tokenValidation}`;
       }
-      if (apiDef.hasOwnProperty('tokenSuffix')) {
-        if (typeof apiDef.tokenSuffix != "string") {
+      if (apiDef.hasOwnProperty('tokenPrefix')) {
+        if (typeof apiDef.tokenPrefix != "string") {
           flag = false;
-          message = `${message}API-${i} : Invalid tokenSuffix\n`;
+          message = `${message}API-${i} : Invalid tokenPrefix\n`;
         }
       }
       if (apiDef.hasOwnProperty('dataMapping')) {
@@ -185,7 +185,7 @@ function checkScriptType(apiDef, prefix, apiConfigJSON) {
 
 function checkCommonFile(apiConfigJSON, scriptFunction, prefix) {
   try {
-    let key = `${prefix}ScriptFile`;
+    let key = `${prefix}CommonScriptFile`;
     if (checkValidString(apiConfigJSON, key)) {
       if (scriptFunction && typeof scriptFunction === "string") {} else {
         return `Enter valid ${prefix}ScriptFunction`;
@@ -252,7 +252,6 @@ function checkTokenSetting(accessTokenSetting, apiDef, apiConfigJSON) {
 function checkTokenCreateSetting(createTokenConfig) {
   try {
     if (checkValidString(createTokenConfig, 'url') 
-        && checkValidString(createTokenConfig, 'methode') 
         && createTokenConfig.hasOwnProperty('headers') 
         && typeof createTokenConfig.headers == 'object'
         && checkValidString(createTokenConfig, 'tokenName')
@@ -281,7 +280,7 @@ function checkCommonFunction(apiConfigJSON, prefix){
   try{
     const commonFunction = apiConfigJSON.hasOwnProperty(`${prefix}CommonFunction`) ? apiConfigJSON[`${prefix}CommonFunction`] : null;
     if(commonFunction){
-      const commonScriptFile = apiConfigJSON.hasOwnProperty(`${prefix}ScriptFile`) ? apiConfigJSON[`${prefix}ScriptFile`] : null;
+      const commonScriptFile = apiConfigJSON.hasOwnProperty(`${prefix}CommonScriptFile`) ? apiConfigJSON[`${prefix}CommonScriptFile`] : null;
       if(commonScriptFile){
         return checkScript(commonScriptFile, prefix, commonFunction);
       } else {
