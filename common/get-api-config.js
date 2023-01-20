@@ -1,12 +1,9 @@
 import fs from 'fs';
-import path, {dirname} from 'path';
-import {fileURLToPath} from 'url';
 import logMessage from './log.js';
 import { getAbsoultFileWPath } from "./utils.js";
 
-export default async function getAPIConfig() {
+export default async function getAPIConfig(fileName) {
   try {
-    const fileName = process.env.API_CONFIG_FILE;
     if(fileName){
       const fileExtension = fileName.split('.').pop().toLowerCase();
       switch(fileExtension){

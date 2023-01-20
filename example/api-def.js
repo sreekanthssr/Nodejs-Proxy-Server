@@ -1,44 +1,45 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 const apiDef = {
   "version": "1.0.0",
-  "baseURL": "http://localhost:3001",
+  "baseURL": process.env.BASE_URL || "http://localhost:3002",
   "createTokenConfig": {
     "url":"http://localhost:3001/auth",
     "headers":{"sdf":"sdf"},
     "methode":"get",
     "tokenKey":"tokenName",
     "tokenName":"Bearrr",
-    "data":'{user:"ads"}',
+    "data":"{user:\"ads\"}",
     "tokenPrefix":"1234"
   },
   "preCommonFunction": "commonPre",
-  "preCommonScriptFile": "./common-pre.js",
+  "preCommonScriptFile": "./example/custom-scripts/common-pre.js",
   "postCommonFunction": "commonPost",
-  "postCommonScriptFile": "./common-pre.js",
-  apis: [{
+  "postCommonScriptFile": "./example/custom-scripts/common-pre.js",
+  "apis": [{
     "type": "post",
     "path": "/user",
     "microserviceURL": "/getCustomer",
     "microserviceType" : "POST",
     "responseType": "json",
     "appendBasePath": true,
-    "accessTokenSetting": "E",//C or E
+    "accessTokenSetting": "E",
     "tokenMapping": {"frontEndKey":"token", "MSKey":"bearerToken"},
     "dataMapping": {
       "name": "username",
       "email": "emailId"
     },
     "headers":{"a":1},
-    "excuteCommonPreFunction": true,//by default true
-    "excuteCommonPostFunction": true,//by default true
+    "executeCommonPreFunction": true,
+    "executeCommonPostFunction": true,
     "preScriptType":"C",
-    "preScriptFile":"./preScript.js",
+    "preScriptFile":"./example/custom-scripts/preScript.js",
     "postScriptType":"C",
-    "postScriptFile":"./postScript.js",
+    "postScriptFile":"./example/custom-scripts/postScript.js",
     "preScriptFunction":"APIcommonPre",
     "postScriptFunction":"APIcommonPost",
     "tokenPrefix": "Bearer"
   }]
 }
-
-
 export default apiDef;

@@ -1,5 +1,6 @@
 # Nodejs-Proxy-Server
 Create a proxy server from API JavaScript/ JSON. The module will support POST/GET/PUT/DELETE API methods. We can create a token on the fly and use the existing token. An additional enhancement is possible by using pre/post script for all the APIs and/or specific.
+Please check the example folder for implementation.
 ---------------------------------------------------------------------------------------------------
 Example API config Javascript
 const apiDef = {
@@ -32,8 +33,8 @@ const apiDef = {
       "email": "emailId"
     },
     "headers":{"a":1},
-    "excuteCommonPreFunction": false,//by default true
-    "excuteCommonPostFunction": false,//by default true
+    "executeCommonPreFunction": false,//by default true
+    "executeCommonPostFunction": false,//by default true
     "preScriptType":"C",
     "preScriptFile":"./preScript.js",
     "postScriptType":"C",
@@ -76,8 +77,8 @@ Example API config JSON
       "email": "emailId"
     },
     "headers":{"a":1},
-    "excuteCommonPreFunction": false,//by default true
-    "excuteCommonPostFunction": false,//by default true
+    "executeCommonPreFunction": false,//by default true
+    "executeCommonPostFunction": false,//by default true
     "preScriptType":"C",
     "preScriptFile":"./preScript.js",
     "postScriptType":"C",
@@ -146,9 +147,9 @@ Config
 
          headers: [optional] [JSON] Can pass additional headers in the microservice API
 
-         excuteCommonPreFunction: [optional] [Boolen] Use this config to avoid the common pre-function execution. By default true and it will execute the common pre-function
+         executeCommonPreFunction: [optional] [Boolen] Use this config to avoid the common pre-function execution. By default true and it will execute the common pre-function
 
-         excuteCommonPostFunction: [optional] [Boolen] Use this config to avoid the common post function execution. By default true and it will execute the common post function
+         executeCommonPostFunction: [optional] [Boolen] Use this config to avoid the common post function execution. By default true and it will execute the common post function
 
          preScriptType: [optional] [String] This configuration will help to define the type of per script available options are 'C' and 'F'. 'C' option will help to run the function in the common script and need to specify the 'preCommonScriptFile'. 'F' option will execute a specific file with the default exported function need to provide the 'preScriptFile'.
 

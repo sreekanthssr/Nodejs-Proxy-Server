@@ -191,7 +191,7 @@ function checkCommonFile(apiConfigJSON, scriptFunction, prefix) {
         return `Enter valid ${prefix}ScriptFunction`;
       }
       let commonFileContent = getFileContent(apiConfigJSON[key]);
-      if (commonFileContent.includes(scriptFunction)) {
+      if (commonFileContent && commonFileContent.includes(scriptFunction)) {
         return true;
       } else {
         return `${apiConfigJSON[key]} file not have ${scriptFunction}`;
@@ -209,7 +209,7 @@ function checkScript(scriptFile, prefix, functionName = null) {
     if (scriptFile && typeof scriptFile === "string") {
       let scriptFileContent = getFileContent(scriptFile);
       if(functionName){
-        if(!scriptFileContent.includes(functionName)){
+        if(!scriptFileContent || !scriptFileContent.includes(functionName)){
           return `${prefix}ScriptFile function missing`
         }
       }

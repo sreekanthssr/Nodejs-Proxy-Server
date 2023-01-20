@@ -13,9 +13,9 @@ const handelAPI = async (req, res, apiConfigJSON) => {
     const apiDef = getAPIDef(req, apiConfigJSON);
     if (apiDef) {
       let options = await getRequestOptions(req, apiDef, apiConfigJSON);
-      options = await excutePreScript(apiDef, apiConfigJSON, options, req);
+      options = await executePreScript(apiDef, apiConfigJSON, options, req);
       let microServiceResponse = await axios(options);
-      microServiceResponse = await excutePostScript(apiDef, apiConfigJSON, req, res, microServiceResponse);
+      microServiceResponse = await executePostScript(apiDef, apiConfigJSON, req, res, microServiceResponse);
       return res.status(microServiceResponse.status).send(microServiceResponse.data);
     } else {
       apiResponse.send404(res);
@@ -155,10 +155,10 @@ const createToken = async (apiDef, apiConfigJSON) => {
   }
 }
 
-const excutePreScript = async (apiDef, apiConfigJSON, options, req) => {
+const executePreScript = async (apiDef, apiConfigJSON, options, req) => {
   try {
     let updatedOptions = {...options};
-    if(apiDef.hasOwnProperty('excuteCommonPreFunction') && apiDef.excuteCommonPreFunction === false){}
+    if(apiDef.hasOwnProperty('executeCommonPreFunction') && apiDef.executeCommonPreFunction === false){}
     else {
       const commonFunction = await getCommonFunction(apiConfigJSON, 'pre');
       updatedOptions = await (commonFunction) ? commonFunction (updatedOptions, req): updatedOptions;
@@ -170,11 +170,11 @@ const excutePreScript = async (apiDef, apiConfigJSON, options, req) => {
     return options;
   }
 }
-const excutePostScript = async (apiDef, apiConfigJSON, req, res, microServiceResponse) => {
+const executePostScript = async (apiDef, apiConfigJSON, req, res, microServiceResponse) => {
   try {
     const excutionFunction = await getExcutionFunction(apiDef, apiConfigJSON, 'post');
     let updatedMSResponse =  await (excutionFunction) ? excutionFunction(req, res, {...microServiceResponse}) : {...microServiceResponse};
-    if(apiDef.hasOwnProperty('excuteCommonPostFunction') && apiDef.excuteCommonPostFunction === false){}
+    if(apiDef.hasOwnProperty('executeCommonPostFunction') && apiDef.executeCommonPostFunction === false){}
     else {
       const commonFunction = await getCommonFunction(apiConfigJSON, 'post');
       updatedMSResponse = await (commonFunction) ? commonFunction(req, res, {...updatedMSResponse}): {...updatedMSResponse};
