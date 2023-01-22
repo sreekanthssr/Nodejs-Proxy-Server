@@ -1,5 +1,5 @@
 # Nodejs-Proxy-Server
-Create a proxy server from API JavaScript/ JSON. The module will support POST/GET/PUT/DELETE API methods. We can create a token on the fly and use the existing token. An additional enhancement is possible by using pre/post script for all the APIs and/or specific.
+Create a proxy server from JavaScript/ JSON. The module will support POST/GET/PUT/DELETE API methods. We can create a token on the fly and use the existing token. An additional enhancement is possible by using pre/post script for all the APIs and/or specific.
 Please check the example folder for implementation.
 ---------------------------------------------------------------------------------------------------
 Example API config Javascript
@@ -92,21 +92,20 @@ Example API config JSON
 Config
     version : [Required] [String] The provide a valid version no eg: "1.0.0"
 
-    baseURL: [Required] [String] The baseURL should be the pointing backend server eg: "http://anymicroservice:3001"
+    baseURL: [Required] [String] The baseURL should be the pointing backend server eg: "http://anymicroservice:3001".
 
-    preCommonFunction: [optional] [String] The function name needs to execute before all the microservice API. While configuring this one need to provide the 'preCommonScriptFile'.
+    preCommonFunction: [optional] [String] Give function needs to execute before all the microservice API. While configuring this need to provide the 'preCommonScriptFile'.
     The function will call with option as the first argument and request as the second argument. The function should return updated options.
     eg: export default function preScript(option, request) { return option};
 
-    preCommonScriptFile : [optional] [String] Use this config to specify the javascript file name that has 'preCommonFunction'. eg: "./preScript.js". And also any of the API config have this config "preScriptType":"C" need to specify the file path
+    preCommonScriptFile : [optional] [String] Use this config to specify the javascript file name that has 'preCommonFunction'. eg: "./preScript.js". And also any of the API config have this config "preScriptType":"C" need to specify the file path here.
 
-    postCommonFunction: [optional] [String] The function name needs to execute after all the microservice API. While configuring this one need to provide the 'postCommonScriptFile'.
-    The function should return the updated microserviceAPIResponse back. 
+    postCommonFunction: [optional] [String] The function will to execute after all the microservice API. While configuring this option need to provide the 'postCommonScriptFile'. The function will call with the request as first, response as the second argument, and microservice response as third argument. The function should return the updated microserviceAPIResponse back. 
     eg: export default function postScript(request, response, microserviceAPIResponse) { return updatedMicroserviceAPIResponse};
 
-    postCommonScriptFile : [optional] [String] Use this config to specify the javascript file name that has 'postCommonFunction'. eg: "./postScript.js". And also any of the API configs have this config "postScriptType":"C" need to specify the file path.
+    postCommonScriptFile : [optional] [String] Use this config to specify the javascript file name that has 'postCommonFunction'. eg: "./postScript.js". And also any of the API configs have this config "postScriptType":"C" need to specify the file path here.
 
-    createTokenConfig: [optional] [JSON] If API needs to create the token during a microservice API call need to provide the configuration (apis[0].accessTokenSetting is 'C').
+    createTokenConfig: [optional] [JSON] If API needs to create the token during a microservice API call need to provide the configuration (eg: apis[0].accessTokenSetting is 'C').
 
         url: [Required] [String] Provide the token creation URL eg: https://www.auth.com/auth
 
