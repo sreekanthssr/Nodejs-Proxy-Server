@@ -1,5 +1,5 @@
 {
-  "name": "Nodejs proxy server",
+  "name": "ss-proxy-server",
   "version": "1.0.0",
   "description": "Create Proxy server from JSON",
   "main": "index.js",
