@@ -53,8 +53,9 @@ const checkValidJSON = (object) => {
   }
 }
 const getAbsoultFileWPath = (fileName) =>{
-  const __dirname = dirname(fileURLToPath(import.meta.url));
-  return path.join(__dirname, `./../${fileName}`);
+  /* const __dirname = dirname(fileURLToPath(import.meta.url));
+  return path.join(__dirname, `./../${fileName}`); */
+  return `./../${fileName}`;
 }
 
 export {
