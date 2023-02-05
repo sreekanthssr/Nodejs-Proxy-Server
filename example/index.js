@@ -8,7 +8,7 @@ import startProxyServer from '../index.js';
     extended: true
   })); 
 
-  //Another API endpoints here
+  //other API endpoints here
 
   startProxyServer({app, configFile: './example/api-def.js'})
   
