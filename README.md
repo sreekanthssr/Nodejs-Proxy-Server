@@ -152,6 +152,12 @@ Config<br />
   "name": "username",//Proxy API will get the 'name' and map it to 'username' and send it to microservice
   "email": "emailId"
   }</p>
+<p><b>queryParam</b>: [optional] [JSON] Please use the config to map the query param. The JSON key will input the data 'key' and
+  the 'value' will be the microservice key eg:
+  {
+  "name": "username",//Proxy API will get the 'name' and map it to 'username' and send it to microservice
+  "email": "emailId"
+  }</p>
 <p><b>headers</b>: [optional] [JSON] Can pass additional headers in the microservice API</p>
 <p><b>executeCommonPreFunction</b>: [optional] [Boolen] Use this config to avoid the common pre-function execution. By default
   true and it will execute the common pre-function</p>
