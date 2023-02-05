@@ -3,7 +3,7 @@ dotenv.config();
 
 const apiDef = {
   "version": "1.0.0",
-  "baseURL": process.env.BASE_URL || "http://localhost:3002",
+  "baseURL": process.env.BASE_URL || "http://localhost:3001",
   "createTokenConfig": {
     "url":"http://localhost:3001/auth",
     "headers":{"sdf":"sdf"},
@@ -18,15 +18,19 @@ const apiDef = {
   "postCommonFunction": "commonPost",
   "postCommonScriptFile": "./example/custom-scripts/common-pre.js",
   "apis": [{
-    "type": "post",
+    "type": "get",
     "path": "/user",
     "microserviceURL": "/getCustomer",
-    "microserviceType" : "POST",
+    "microserviceType" : "get",
     "responseType": "json",
     "appendBasePath": true,
     "accessTokenSetting": "E",
     "tokenMapping": {"frontEndKey":"token", "MSKey":"bearerToken"},
     "dataMapping": {
+      "name": "username",
+      "email": "emailId"
+    },
+    "queryParam" : {
       "name": "username",
       "email": "emailId"
     },

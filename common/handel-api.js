@@ -18,32 +18,45 @@ const handelAPI = async (req, res, apiConfigJSON) => {
       microServiceResponse = await executePostScript(apiDef, apiConfigJSON, req, res, microServiceResponse);
       return res.status(microServiceResponse.status).send(microServiceResponse.data);
     } else {
-      apiResponse.send404(res);
+      return apiResponse.send404(res);
     }
   } catch (e) {
     logMessage(e);
     return apiResponse.send500(res);
   }
-  return apiResponse.send500(res);
 }
 
 const getAPIDef = (req, apiDef) => {
   try {
     return apiDef.apis.find(api => {
-      return api.type.toLowerCase() === req.method.toLowerCase() && api.path === req.url;
+      return api.type.toLowerCase() === req.method.toLowerCase() && api.path === getRequestPath(req);
     });
   } catch (e) {
     logMessage(e);
     return null;
   }
 }
-const getRequestURL = (apiDef, apiConfig) => {
+const getRequestPath = (req) =>{
+  const reqURLSplit = (req.url) ? req.url.split('?') : [];
+  return reqURLSplit[0] || null;
+}
+const getRequestURL = (apiDef, apiConfig, req) => {
   try {
     let url = '';
     if (apiDef.hasOwnProperty('appendBasePath') && apiDef.appendBasePath === false) {} else {
       url = apiConfig.baseURL;
     }
-    return `${url}${apiDef.microserviceURL}`;
+    let msQuery = "";
+    if(apiDef.hasOwnProperty('queryParam') && Object.keys(apiDef.queryParam).length){
+      const query = req.query;
+      msQuery = "?";
+      Object.keys(apiDef.queryParam).forEach(key =>{
+        if(query[key]){
+          msQuery += `${apiDef.queryParam[key]}=${query[key]}&`;
+        }
+      });
+    }
+    return `${url}${apiDef.microserviceURL}${msQuery}`;
   } catch (e) {
     logMessage(e);
     return null;
@@ -52,7 +65,7 @@ const getRequestURL = (apiDef, apiConfig) => {
 
 const getRequestOptions = async (req, apiDef, apiConfigJSON) => {
   try {
-    const url = getRequestURL(apiDef, apiConfigJSON);
+    const url = getRequestURL(apiDef, apiConfigJSON,req);
     const method = apiDef.microserviceType;
     let headers = {};
     if (apiDef.hasOwnProperty('headers') && checkValidJSON(apiDef.headers)) {

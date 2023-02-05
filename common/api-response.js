@@ -8,7 +8,7 @@ const send403 = (res) =>
   res.status(403).send('Forbidden');
 
 const send404 = (res) => 
-  res.status(404).send('API not fpund!');
+  res.status(404).send('API not found!');
 
 const send500 = (res) => 
   res.status(500).send('Internal Server Error');
